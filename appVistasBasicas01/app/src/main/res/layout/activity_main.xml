@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- C20131354 Gerardo Ignacio Martinez Marin -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Operaciones Artiméticas"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#3F51B5"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/numero1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Ingresa un número entero: "
+        android:inputType="text"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <EditText
+        android:id="@+id/numero2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Ingresa un número entero: "
+        android:inputType="text"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/sumaRbtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="operaciones"
+            android:text="Suma" />
+
+        <RadioButton
+            android:id="@+id/restaRbtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="operaciones"
+            android:text="Resta" />
+
+        <RadioButton
+            android:id="@+id/multRbtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="operaciones"
+            android:text="Multiplicación" />
+
+        <RadioButton
+            android:id="@+id/divRbtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="operaciones"
+            android:text="División" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/resultado"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+</LinearLayout>

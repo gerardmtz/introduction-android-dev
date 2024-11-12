@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Aplicacion Intent</string>
+    <string name="pagina_web">Abrir pagina Web</string>
+    <string name="geolocaliza">Geolocalizacion</string>
+    <string name="llamada">Hacer llamada</string>
+    <string name="foto">Tomar foto</string>
+    <string name="correo">Enviar Correo</string>
+</resources>

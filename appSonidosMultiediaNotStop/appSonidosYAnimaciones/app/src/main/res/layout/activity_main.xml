@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:backgroundTint="@color/white"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ejemplo Multimedia"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.049" />
+
+    <ImageButton
+        android:id="@+id/gatoBtn"
+        android:layout_width="147dp"
+        android:layout_height="143dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="50dp"
+        android:contentDescription="Maullido"
+        android:onClick="sonidoGato"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/grilloBtn"
+        app:layout_constraintEnd_toStartOf="@+id/perroBtn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:srcCompat="@drawable/gato2" />
+
+    <ImageButton
+        android:id="@+id/perroBtn"
+        android:layout_width="148dp"
+        android:layout_height="142dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="50dp"
+        android:contentDescription="Ladrido"
+        android:onClick="sonidoPerro"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/legoBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/gatoBtn"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:srcCompat="@drawable/perro2" />
+
+    <ImageButton
+        android:id="@+id/grilloBtn"
+        android:layout_width="144dp"
+        android:layout_height="192dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="50dp"
+        android:contentDescription="Sonido Grillo"
+        android:onClick="sonidoGrillo"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/videoView2"
+        app:layout_constraintEnd_toStartOf="@+id/legoBtn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gatoBtn"
+        app:srcCompat="@drawable/grillo2" />
+
+    <ImageButton
+        android:id="@+id/legoBtn"
+        android:layout_width="152dp"
+        android:layout_height="187dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="50dp"
+        android:contentDescription="Activa video lego"
+        android:onClick="reproducirVideo"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/videoView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/grilloBtn"
+        app:layout_constraintTop_toBottomOf="@+id/perroBtn"
+        app:srcCompat="@drawable/lego1" />
+
+    <VideoView
+        android:id="@+id/videoView2"
+        android:layout_width="343dp"
+        android:layout_height="198dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="500dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

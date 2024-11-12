@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Operaciones Artimeticas Basicas"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/numero1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Inserte un numero entero:"
+        android:inputType="number"
+        android:minHeight="48dp" />
+
+    <EditText
+        android:id="@+id/numero2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Inserte un numero entero:"
+        android:inputType="number"
+        android:minHeight="48dp" />
+
+    <CheckBox
+        android:id="@+id/checkSuma"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="operaciones"
+        android:text="Suma" />
+
+    <CheckBox
+        android:id="@+id/checkResta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="operaciones"
+        android:text="Resta" />
+
+    <CheckBox
+        android:id="@+id/checkMult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="operaciones"
+        android:text="Multiplicacion" />
+
+    <CheckBox
+        android:id="@+id/checkDiv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="operaciones"
+        android:text="Division" />
+
+    <TextView
+        android:id="@+id/result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textStyle="bold" />
+
+</LinearLayout>

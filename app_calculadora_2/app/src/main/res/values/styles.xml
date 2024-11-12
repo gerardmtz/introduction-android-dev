@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="BotonCalculadora" parent="TextAppearance.AppCompat.Headline">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">40dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <style name="BotonCalculadora.Rojo" parent="BotonCalculadora">
+        <item name="android:background">#EA4D39</item>
+    </style>
+
+    <style name="BotonCalculadora.Azul" parent="BotonCalculadora">
+        <item name="android:background">#00537D</item>
+    </style>
+
+    <style name="BotonCalculadoraB" parent="TextAppearance.AppCompat.Headline">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">#00537D</item>
+    </style>
+</resources>

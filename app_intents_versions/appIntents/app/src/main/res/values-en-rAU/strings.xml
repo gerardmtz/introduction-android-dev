@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">App Intents</string>
+    <string name="pagina_web">Open website</string>
+    <string name="geolocaliza">Geolocalization</string>
+    <string name="llamada">Phone call</string>
+    <string name="foto">Take picture</string>
+    <string name="correo">Send emails</string>
+</resources>
