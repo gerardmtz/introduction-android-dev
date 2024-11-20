@@ -9,6 +9,13 @@ class Usuario(context: Context) {
     private val dbHelper: MiBDHelper = MiBDHelper(context);
     private val db: SQLiteDatabase = dbHelper.writableDatabase;
 
+    companion object {
+        const val  TABLE_NAME = "usuarios";
+        const val COLUMN_ID = "id";
+        const val COLUMN_NOMBRE = "nombre";
+        const val COLUMN_EDAD = "edad";
+    }
+
     // Funciones de la BD
 
     // agregar un usuario nuevo
@@ -18,17 +25,27 @@ class Usuario(context: Context) {
             put("edad", edad);
         }
         // insertar en la bd y regresar el id del registro
-        return db.insert("usuarios", null, valores);
+        return db.insert(TABLE_NAME, null, valores);
     }
 
     // obtener todos los usuarios en la bd
     fun obtenerUsuarioPorID(id: Int): Cursor? {
 
-        val columnas = arrayOf("id", "nombre", "edad");
+        val columnas = arrayOf(COLUMN_ID, COLUMN_NOMBRE, COLUMN_EDAD);
 
-        return db.query("usuarios", columnas,
-            "id = ?", arrayOf(id.toString()),
-            null, null, null);
+        val cursor = db.query(TABLE_NAME, columnas, "id = ?",
+            arrayOf(id.toString()), null, null, null);
+
+        return if (cursor != null && cursor.moveToFirst()) {
+            cursor;
+        }
+        else {
+            null; // si no existen usuarios en la base de datos se ingresa el ID NULL
+        }
+
+//        return db.query("usuarios", columnas,
+//            "id = ?", arrayOf(id.toString()),
+//            null, null, null);
     }
 
     // actualizar un usuario por ID
@@ -44,7 +61,7 @@ class Usuario(context: Context) {
     }
 
     // eliminar usuario por id
-    fun eliminarUsuario(id: Int): Int {
+    fun eliminarUsuario(id  Int): Int {
         return db.delete("usuarios", "id = ?",
             arrayOf(id.toString()));
     }
