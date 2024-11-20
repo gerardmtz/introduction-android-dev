@@ -1,97 +1,124 @@
 package com.example.appsqlitekotlin
 
 import android.database.Cursor
-import android.net.wifi.p2p.WifiP2pManager.DnsSdTxtRecordListener
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
 
     // campos
-    lateinit var idTxt: EditText;
-    lateinit var nameTxt: EditText;
-    lateinit var ageTxt: EditText;
+    lateinit var idTxt: EditText
+    lateinit var nameTxt: EditText
+    lateinit var ageTxt: EditText
 
-    // botones
-    lateinit var agregarBtn: Button;
-    lateinit var consultarBtn: Button;
-    lateinit var cambiarBtn: Button;
-    lateinit var eliminarBtn: Button;
+    //botones
+    lateinit var agregarBtn: Button
+    lateinit var consultarBtn: Button
+    lateinit var cambiarBtn: Button
+    lateinit var eliminarBtn: Button
 
-    // clase Usuario
-    lateinit var usuario: Usuario;
+    //recycler view
+    private lateinit var recyclerView: RecyclerView
 
+    // Clase métodos de BD para Usuario
+    lateinit var usuarioMetodosCRUD:UsuarioMetodosCRUD
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-//            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-//            insets
-//        }
+        //Iniciamos
+        usuarioMetodosCRUD = UsuarioMetodosCRUD(this)
 
-        usuario = Usuario(this);
+        //Iniciamos los campos de captura
+        idTxt = findViewById(R.id.idtxt)
+        nameTxt = findViewById(R.id.nombretxt)
+        ageTxt = findViewById(R.id.edadtxt)
 
-        // iniciamos los campos de captura
+        //Iniciamos los botones
+        agregarBtn = findViewById(R.id.agregar)
+        consultarBtn = findViewById(R.id.consultar)
+        cambiarBtn = findViewById(R.id.cambiar)
+        eliminarBtn = findViewById(R.id.eliminar)
 
-        idTxt = findViewById(R.id.idtxt);
-        nameTxt = findViewById(R.id.nombretxt);
-        ageTxt = findViewById(R.id.edadtxt);
+        // Iniciamos el recyclerView, para mostrar todos los
+        // elementos en la tabla usuario
+        recyclerView = findViewById(R.id.recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
 
-        // Iniciamos los botones
-
-        agregarBtn = findViewById(R.id.agregar);
-        consultarBtn = findViewById(R.id.consultar);
-        cambiarBtn = findViewById(R.id.cambiar);
-        eliminarBtn = findViewById(R.id.eliminar);
-
-        // codigo para agregar registros en la tabla de usuario
+        // Código para agregar registros en la tabla usuario
         agregarBtn.setOnClickListener {
-
-            // obtener el texo ingresado en el EditText
-            val ageText = ageTxt.text.toString();
-
-            // agregar usuario
-            val id = usuario.agregarUsuario(nameTxt.text.toString(),
-                ageText.toInt())
-
-            Toast.makeText(this, "Usuario Agregado con ID: $id",
-                Toast.LENGTH_SHORT).show();
-
+            // Obtener el texto ingresado en el EditText
+            val ageText = ageTxt.text.toString()
+            //agregar usuario
+            val id = usuarioMetodosCRUD.agregarUsuario(
+                nameTxt.text.toString(), ageText.toInt())
+            Toast.makeText(this,
+                "Usuario agregado con ID: $id",
+                Toast.LENGTH_SHORT).show()
         }
 
-        // Realizar la consulta por id
         consultarBtn.setOnClickListener {
-            val idText = idTxt.text.toString();
-            val id: Int = idText.toInt();
-            val cursor: Cursor? = usuario.obtenerUsuarioPorID(id);
+            //obtener el id ingresado en el EditText
+            val idText = idTxt.text.toString()
 
-            // verificar si el cursor tiene datos
-            if (cursor != null && cursor.moveToFirst()) {
-                // obtener le indice de las columnas
+            if(idText.isNotEmpty()){
+                val id: Int = idText.toInt()
+                consultaUsuarioPorID(id)
 
-                val idIndex = cursor.getColumnIndex("id");
-                val nombreIndex = cursor.getColumnIndex("nombre");
-                val edadIndex = cursor.getColumnIndex("edad");
-
-                // mover los valores al Cursosr a los EditText
-                idTxt.setText(cursor.getInt(idIndex).toString());
-                nameTxt.setText(cursor.getString(nombreIndex).toString());
-                ageTxt.setText(cursor.getInt(edadIndex).toString());
+            } else {
+                //obtener la lista de usuarios
+                val lista = usuarioMetodosCRUD.obtenerTodosLosUsarios()
+                //asignar el adaptador al RecyclerView
+                println("<--------------despues de obtener la lista")
+                Log.d("UsuarioToAdapter", "Tamaño de la lista: ${lista.size}")
+                val adapter =UsuarioToAdapter(lista)
+                recyclerView.adapter = adapter
+                println("despues de asignar el adaptador ---------->")
             }
-
-            // cerrar el cursor despues de usuarlo
-            cursor?.close();
         }
-    } // end of onCreate
+
+        cambiarBtn.setOnClickListener {
+            val filas = usuarioMetodosCRUD.actualizaUsuarioPorId(
+                idTxt.text.toString().toIntOrNull() ?: 0,
+                nameTxt.text.toString(),
+                ageTxt.text.toString().toIntOrNull() ?: 0)
+            Toast.makeText(this, "Filas actualizadas: $filas", Toast.LENGTH_SHORT).show()
+        }
+
+        eliminarBtn.setOnClickListener {
+            val filas = usuarioMetodosCRUD.eliminarUsuario(
+                idTxt.text.toString().toIntOrNull() ?: 0)
+            Toast.makeText(this, "Filas eliminadas: $filas", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun consultaUsuarioPorID(id: Int){
+        val cursor: Cursor? = usuarioMetodosCRUD.obtenerUsuarioPorID(id)
+        // Verificar si el Cursor tiene datos
+        if (cursor != null && cursor.moveToFirst()) {
+            // Obtener el índice de las columnas
+            val idIndex =
+                cursor.getColumnIndex("id")
+            val nombreIndex =
+                cursor.getColumnIndex("nombre")
+            val edadIndex =
+                cursor.getColumnIndex("edad")
+
+            // Mover los valores del Cursor a los EditText
+            idTxt.setText(cursor.getInt(idIndex).toString())
+            nameTxt.setText(cursor.getString(nombreIndex))
+            ageTxt.setText(cursor.getInt(edadIndex).toString())
+        } else
+            Toast.makeText(this, "ID no encontrado: $id", Toast.LENGTH_LONG).show()
+
+        // Cerrar el cursor después de usarlo
+        cursor?.close()
+    }
 }
