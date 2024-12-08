@@ -4,9 +4,12 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.MediaPlayer;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import androidx.media3.common.util.Log;
 
 /**
  * GameView es una clase personalizada que maneja la lógica del juego, el dibujo y las actualizaciones.
@@ -24,6 +27,9 @@ public class GameView extends SurfaceView implements Runnable {
 
     // Variables para el acelerómetro
     private float ax = 0, ay = 0;
+
+    // MediaPlayer para reproducir el sonido push
+    private MediaPlayer pushSound;
 
     /**
      * Constructor de GameView.
@@ -43,11 +49,19 @@ public class GameView extends SurfaceView implements Runnable {
 
         // Inicializa la pelota
         ball = new Ball(screenX, screenY);
+
+        // Carga el sonido push.flac desde la carpeta raw
+        // Asegúrate de que push.flac esté en res/raw/push.flac y sea compatible.
+        pushSound = MediaPlayer.create(context, R.raw.push);
+
+        // Verifica si pushSound se pudo cargar
+        if (pushSound == null) {
+            Log.e("GameView", "No se pudo cargar el sonido push (push.flac). " +
+                    "Verifica que el archivo esté en res/raw/push.flac y sea un formato soportado. " +
+                    "Si el problema persiste, intenta con un archivo .ogg o .wav.");
+        }
     }
 
-    /**
-     * Método principal del hilo del juego.
-     */
     @Override
     public void run() {
         while (isPlaying) {
@@ -57,9 +71,6 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
-    /**
-     * Actualiza la lógica del juego.
-     */
     private void update() {
         // Actualiza la velocidad basada en el acelerómetro
         ball.vx += ax / 5;
@@ -76,10 +87,6 @@ public class GameView extends SurfaceView implements Runnable {
         ball.update(screenX, screenY);
     }
 
-
-    /**
-     * Dibuja los elementos del juego en el lienzo.
-     */
     private void draw() {
         if (surfaceHolder.getSurface().isValid()) {
             canvas = surfaceHolder.lockCanvas();
@@ -98,23 +105,15 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
-    /**
-     * Controla la velocidad de fotogramas del juego.
-     */
     private void control() {
         try {
-            gameThread.sleep(17); // Aproximadamente 60 fps
+            // Aproximadamente 60 fps
+            Thread.sleep(17);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    /**
-     * Maneja los eventos táctiles.
-     *
-     * @param event El evento táctil.
-     * @return true si el evento fue manejado.
-     */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -126,6 +125,16 @@ public class GameView extends SurfaceView implements Runnable {
             float dy = touchY - ball.y;
             if (dx * dx + dy * dy <= ball.radius * ball.radius) {
                 score++;
+                // Reproduce el sonido al tocar la pelota, sólo si pushSound no es nulo
+                if (pushSound != null) {
+                    // Vuelve al inicio del audio por si se reproduce múltiples veces seguidas
+                    pushSound.seekTo(0);
+                    pushSound.start();
+                } else {
+                    Log.e("GameView", "pushSound es null, no se puede reproducir el sonido. " +
+                            "Verifica el archivo push.flac en res/raw y considera usar otro formato.");
+                }
+
                 // Opcional: Aumentar la velocidad de la pelota
                 ball.vx *= 1.1;
                 ball.vy *= 1.1;
@@ -134,46 +143,35 @@ public class GameView extends SurfaceView implements Runnable {
         return true;
     }
 
-    /**
-     * Inicia el hilo del juego.
-     */
     public void resume() {
         isPlaying = true;
         gameThread = new Thread(this);
         gameThread.start();
     }
 
-    /**
-     * Pausa el juego y detiene el hilo.
-     */
     public void pause() {
         try {
             isPlaying = false;
-            gameThread.join();
+            if (gameThread != null) {
+                gameThread.join();
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        // Liberar recursos opcionalmente
+        if (pushSound != null) {
+            pushSound.release();
+            pushSound = null;
+        }
     }
 
-    /**
-     * Establece los valores del sensor de acelerómetro.
-     *
-     * @param ax Valor del acelerómetro en el eje X.
-     * @param ay Valor del acelerómetro en el eje Y.
-     */
     public void setSensorValues(float ax, float ay) {
         this.ax = ax;
         this.ay = ay;
     }
 
-    /**
-     * Obtiene la puntuación actual del jugador.
-     *
-     * @return La puntuación actual.
-     */
     public int getScore() {
         return score;
     }
-
-
 }
