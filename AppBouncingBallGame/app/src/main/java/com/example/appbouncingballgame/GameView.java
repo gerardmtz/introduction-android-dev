@@ -8,6 +8,9 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+/**
+ * GameView es una clase personalizada que maneja la lógica del juego, el dibujo y las actualizaciones.
+ */
 public class GameView extends SurfaceView implements Runnable {
 
     private Thread gameThread;
@@ -18,8 +21,17 @@ public class GameView extends SurfaceView implements Runnable {
     private SurfaceHolder surfaceHolder;
     private int screenX, screenY;
     private int score = 0;
-    private float ax, ay;
 
+    // Variables para el acelerómetro
+    private float ax = 0, ay = 0;
+
+    /**
+     * Constructor de GameView.
+     *
+     * @param context El contexto de la aplicación.
+     * @param screenX Ancho de la pantalla.
+     * @param screenY Alto de la pantalla.
+     */
     public GameView(Context context, int screenX, int screenY) {
         super(context);
 
@@ -29,10 +41,25 @@ public class GameView extends SurfaceView implements Runnable {
         surfaceHolder = getHolder();
         paint = new Paint();
 
-        // Se inicializa la pelota
+        // Inicializa la pelota
         ball = new Ball(screenX, screenY);
     }
 
+    /**
+     * Método principal del hilo del juego.
+     */
+    @Override
+    public void run() {
+        while (isPlaying) {
+            update();
+            draw();
+            control();
+        }
+    }
+
+    /**
+     * Actualiza la lógica del juego.
+     */
     private void update() {
         // Actualiza la velocidad basada en el acelerómetro
         ball.vx += ax / 5;
@@ -40,17 +67,23 @@ public class GameView extends SurfaceView implements Runnable {
 
         // Limita la velocidad máxima
         float maxSpeed = 20;
-        ball.vx = Math.max(-maxSpeed, Math.min(ball.vx, maxSpeed));
-        ball.vy = Math.max(-maxSpeed, Math.min(ball.vy, maxSpeed));
+        if (ball.vx > maxSpeed) ball.vx = maxSpeed;
+        if (ball.vx < -maxSpeed) ball.vx = -maxSpeed;
+        if (ball.vy > maxSpeed) ball.vy = maxSpeed;
+        if (ball.vy < -maxSpeed) ball.vy = -maxSpeed;
 
+        // Actualiza la posición de la pelota
         ball.update(screenX, screenY);
     }
 
 
+    /**
+     * Dibuja los elementos del juego en el lienzo.
+     */
     private void draw() {
         if (surfaceHolder.getSurface().isValid()) {
             canvas = surfaceHolder.lockCanvas();
-            canvas.drawColor(Color.WHITE);
+            canvas.drawColor(Color.WHITE); // Fondo blanco
 
             // Dibuja la pelota
             paint.setColor(Color.RED);
@@ -65,14 +98,23 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
+    /**
+     * Controla la velocidad de fotogramas del juego.
+     */
     private void control() {
         try {
-            gameThread.sleep(17); // Aproximadamente 60fps
+            gameThread.sleep(17); // Aproximadamente 60 fps
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Maneja los eventos táctiles.
+     *
+     * @param event El evento táctil.
+     * @return true si el evento fue manejado.
+     */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -92,17 +134,18 @@ public class GameView extends SurfaceView implements Runnable {
         return true;
     }
 
-    public void setSensorValues(float ax, float ay) {
-        this.ax = ax;
-        this.ay = ay;
-    }
-
+    /**
+     * Inicia el hilo del juego.
+     */
     public void resume() {
         isPlaying = true;
         gameThread = new Thread(this);
         gameThread.start();
     }
 
+    /**
+     * Pausa el juego y detiene el hilo.
+     */
     public void pause() {
         try {
             isPlaying = false;
@@ -112,13 +155,25 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
-    @Override
-    public void run() {
-        while(isPlaying) {
-            update();
-            draw();
-            control();
-
-        }
+    /**
+     * Establece los valores del sensor de acelerómetro.
+     *
+     * @param ax Valor del acelerómetro en el eje X.
+     * @param ay Valor del acelerómetro en el eje Y.
+     */
+    public void setSensorValues(float ax, float ay) {
+        this.ax = ax;
+        this.ay = ay;
     }
+
+    /**
+     * Obtiene la puntuación actual del jugador.
+     *
+     * @return La puntuación actual.
+     */
+    public int getScore() {
+        return score;
+    }
+
+
 }
